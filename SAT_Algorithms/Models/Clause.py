@@ -52,7 +52,7 @@ class Clause:
 
 l1 = Literal("P", True)
 l2 = Literal("T", False)
-l3 = Literal("X")
+l3 = Literal("X", True)
 
 c = Clause([])
 
