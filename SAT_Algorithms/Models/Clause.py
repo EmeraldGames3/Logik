@@ -20,9 +20,7 @@ class Clause:
         self.remove_duplicates()
 
     def remove_literal(self, l):
-        for i in range(len(self.lst)):
-            if self.lst[i] == l:
-                self.lst.pop(i)
+        self.lst.remove(l)
 
     def __hash__(self):
         return hash(tuple(self.lst))

@@ -21,9 +21,7 @@ class Formula:
         self.remove_duplicates()
 
     def remove_clause(self, l):
-        for i in range(len(self.lst)):
-            if self.lst[i] == l:
-                self.lst.pop(i)
+        self.lst.remove(l)
 
     def __eq__(self, other):
         if not isinstance(other, Formula):
