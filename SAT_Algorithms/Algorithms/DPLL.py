@@ -11,17 +11,20 @@ def DPLL(formula: Formula) -> bool:
     if Clause([]) in formula.lst:
         return False
 
-    for clause in formula.lst:
-        # if the clause is a unit clause, assign its literal
-        if len(clause.lst) == 1:
-            temp_lit = clause.lst[0]
-            formula.remove_clause(clause)
-            for c in formula.lst:
-                for lit in c.lst:
-                    if lit == Literal(temp_lit.name, not temp_lit.value):
-                        c.remove_literal(lit)
+    if any(len(c.lst) == 1 for c in formula.lst):
+        for clause in formula.lst:
+            # if the clause is a unit clause, assign its literal
+            if len(clause.lst) == 1:
+                temp_lit = clause.lst[0]
+                formula.remove_clause(clause)
+                for c in formula.lst:
+                    for lit in c.lst:
+                        if lit == Literal(temp_lit.name, not temp_lit.value):
+                            c.remove_literal(lit)
 
-    if not any(len(c.lst) == 1 for c in formula.lst):
+        return DPLL(formula)
+    else:
+        # This happens if there are no unit-clauses
         def assign_literal(fa, name, value):
             for cl in fa.lst:
                 for l in cl.lst:
@@ -37,11 +40,16 @@ def DPLL(formula: Formula) -> bool:
         for c in formula.lst:
             for lit in c.lst:
                 variable_count[lit.name] = variable_count.get(lit.name, 0) + 1
-        most_common_variable = max(variable_count, key=variable_count.get)
-        # assign the most common variable to be true
-        formula = assign_literal(formula, most_common_variable, True)
 
-    return DPLL(formula)
+        most_common_variable = max(variable_count, key=variable_count.get)
+
+        # Assign the most common variable to be true
+        formula_1 = assign_literal(formula, most_common_variable, True)
+        # Assign the most common variable to be false
+        formula_2 = assign_literal(formula, most_common_variable, False)
+
+        # Return the logical OR of the results
+        return DPLL(formula_1) or DPLL(formula_2)
 
 
 assert not DPLL(Formula([Clause([])]))
